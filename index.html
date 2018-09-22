@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图片预加载之无序加载</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width:100%;
+            height:100%;
+        }
+        .box{
+            text-align: center;
+        }
+        .btn{
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            border:1px solid #ccc;
+            text-decoration: none;
+            padding: 0 10px;
+            margin-right: 50px;
+
+        }
+        .btn:hover {
+            background-color:#eee;
+        }
+        .loading{
+            position: fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height: 100%;
+            background-color: #eee;
+            text-align: center;
+            font-size:30px;
+        }
+        .process{
+            margin-top:300px;
+            
+        }
+    </style>
+    <script src="./js/jquery.min.js"></script>
+</head>
+<body>
+    <div class="box">
+        <img src="http://pic.netbian.com/uploads/allimg/180920/201514-1537445714b204.jpg" alt="img" id="img" />
+        <p>
+            <a href="javascript:;" class="btn" data-control="prv">上一页</a>
+            <a href="javascript:;" class="btn" data-control="next">下一页</a>
+        </p>
+    </div>
+    <div class=loading>
+        <div class="process">0%</div>
+    </div>
+    <script>
+        $(function(){
+            var imgArr = [
+                "http://img.netbian.com/file/2018/0913/fcc6f3217aa1289369e756d61aa36d87.jpg",
+                "http://img.netbian.com/file/20140205/9c74ea4b0d3d9b26b39d9589fd3cb670.jpg",
+                "http://img.netbian.com/file/2016/0217/4a7e8fb5ae0cafbba1ac537eacfa75db.jpg",
+                "http://pic.netbian.com/uploads/allimg/180222/231102-151931226201f1.jpg" ,
+                "http://pic.netbian.com/uploads/allimg/180128/112234-1517109754d925.jpg"
+                ];
+            var index = 0,len = imgArr.length,$process = $('.process');
+            // $.each(imgArr,function(i,src){
+            //     var imgObj = new Image();
+            //     $(imgObj).on('load',function(){
+            //         var num = Math.round((count+1)/len*100);
+            //         console.log(num)
+            //         $process.html(num+"%")
+            //         if(count >= len-1){
+            //             $('.loading').hide();
+            //             document.title = '1/'+len;
+            //         }
+            //         count++;
+            //     })
+            //     imgObj.src = src
+            // })
+            $.preload(imgArr,{
+                each : function(count){
+                    alert(123)
+                    var num = Math.round((count+1)/len*100);
+                    $process.html(num+"%")
+                },
+                all : function(){
+                    $('.loading').hide();
+                    document.title = '1/'+len;
+                }
+            })
+            $(".btn").click(function(){
+                if($(this).data('control') == "prev"){
+                    //上一张
+                    /*index--;
+                    if(index < 0){
+                        index = 0;
+                    }*/
+                    index = Math.max(0,--index);
+
+                }else{
+                    //下一张
+                    index = Math.min(len-1,++index);
+                }
+                document.title = (index + 1 )+ "/" + len;
+                $('img').attr('src',imgArr[index])
+            })
+        })
+    </script>
+    <script src="./js/preloading.js"></script>
+</body>
+</html>
